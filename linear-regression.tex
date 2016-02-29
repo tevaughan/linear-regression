@@ -90,15 +90,15 @@
 
 \emph{Linear regression} allows one to find the best-fit curve through a set of
 points in the plane. The ``linear'' in ``linear regression'' refers not to the
-shape of the best-fit curve (for it need not be a straight line) but to a
-different aspect of the function that represents the curve. The function
-representing the best-fit curve must be a \emph{linear combination} of basis
-functions, each of which may be a \emph{non}-linear function of the independent
-variable.  So, if the curve can be expressed as a linear combination of
-functions of the independent variable, and if, by ``best'', one mean that the
-coefficients of the linear combination are chosen to minimize the sum of
-squared deviations between the points and the curve, then one can find the
-best-fit curve by way of linear regression.
+shape of the best-fit curve (for it need not be a straight line) but to an
+aspect of the expression that represents the curve. The function representing
+the best-fit curve must be a \emph{linear combination} of basis functions, even
+though each basis function may be a \emph{non}-linear function of the
+independent variable.  So, if the curve can be expressed as a linear
+combination of functions of the independent variable, and if, by ``best'', one
+mean that the coefficients of the linear combination are chosen to minimize the
+sum of squared deviations between the points and the curve, then one can find
+the best-fit curve by way of linear regression.
 
 The main benefits of linear regression include determinism in the time required
 to compute the fit and certainty that the solution is in fact the best
@@ -108,26 +108,26 @@ used.
 For example, if one want to fit a sinusoidal model to a set of points in the
 plane, then the phase can be extracted from the fit, but the frequency cannot
 be extracted. The frequency of the oscillation cannot be found by linear
-regression because the frequency is not the coefficient of any basis function
-in the linear combination.  However, if the frequency be known, then the phase
-can be found by linear regression because any sinusoid can be expressed as the
-sum of the sine and the cosine, here used as basis functions. The relationship
-between the coefficients of the sine and cosine basis functions gives the phase
-of the best-fit curve.
+regression because the frequency is not the coefficient of a term in any finite
+linear combination of angle-dependent terms representing a sinusoidal curve.
+However, if the frequency be known, then the phase can be found by linear
+regression because any sinusoid can be expressed as the sum of the sine
+function and the cosine function, here used as basis functions. The
+relationship between the best-fit coefficients of the sine and the cosine gives
+the phase of the best-fit curve.
 
 The phrase, ``\htmladdnormallink{linear
 regression}{https://en.wikipedia.org/wiki/Linear\_regression}'' is associated
 with a wide variety of mathematical procedures. The present document describes
 a C++ library for computing a linear regression to find the coefficient for
 every basis function of the same, single, independent variable.  Although we
-express the basis in terms of a single independent variable, the output of each
-basis function serves effectively as a separate independent variable.  So we
-implement a special case of \emph{multiple} linear regression, where each of
-the multiple independent variables corresponds to a basis function of a single,
-underlying independent variable.
-
-There are also different ways to compute the same regression. We have chosen
-the \htmladdnormallink{method recommended in
+express each basis function in terms of the same, single, independent variable,
+the output of each basis function serves effectively as a separate independent
+variable.  So we end up implementing a special case of \emph{multiple} linear
+regression, where each of the multiple independent variables corresponds to a
+different basis function of the same, single, underlying independent variable.
+There are different ways to compute the same regression. We have chosen the
+\htmladdnormallink{method recommended in
 Version~3.2.8}{http://eigen.tuxfamily.org/dox/group\_\_TutorialLinearAlgebra.html\#TutorialLinAlgLeastsquares}
 of the \htmladdnormallink{Eigen header-only C++
 library}{http://eigen.tuxfamily.org/index.php?title=Main\_Page}.  This is the
