@@ -26,3 +26,11 @@
 *.exe
 *.out
 *.app
+
+# LaTeX files
+*.aux
+*.log
+
+# Miscellaneous
+logo.pdf
+

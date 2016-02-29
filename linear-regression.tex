@@ -1,0 +1,196 @@
+
+\newcommand{\doctitle}{Framework for Linear Regression in C++}
+
+\documentclass[twocolumn]{article}
+
+\usepackage{amsmath}        % for \text
+\usepackage[english]{babel} % language selection
+\usepackage{amsfonts}       % for \mathbb
+
+% for formatting figure captions
+\usepackage[margin=10pt,font={sf},labelfont=bf]%
+           {caption}        % for formatting figure captions
+
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{lastpage}
+\usepackage{natbib}
+\usepackage{tikz}
+\usepackage{times}
+\usepackage{vmargin}
+\usepackage{xcolor}
+
+\usepackage[colorlinks=true,citecolor=blue,hyperfootnotes=false]
+           {hyperref} % This must be the last package.
+
+\selectlanguage{english} % Configure babel.
+
+% vmargin setup
+\setpapersize{USletter}
+\setmarginsrb%
+{0.375in}%           left
+{0.375in}%           top
+{0.375in}%           right
+{0.5in}%             bottom
+{2\baselineskip}%    headheight
+{2\baselineskip}%    headsep
+{3\baselineskip}%    footheight
+{4\baselineskip}%    footskip
+
+% mydate macro
+\newcommand{\mydate}{%
+   \number\year\space%
+   \ifcase\month\or%
+      Jan\or\ Feb\or\ Mar\or\ Apr\or\ May\or\ Jun\or%
+      Jul\or\ Aug\or\ Sep\or\ Oct\or\ Nov\or\ Dec
+   \fi\space%
+   \number\day%
+}
+
+% fancyhdr settings
+\pagestyle{fancy}
+\lhead{\sffamily\textbf{\doctitle}}
+\chead{}
+\rhead{\sffamily \thepage~of~\pageref{LastPage}}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
+\lfoot{%
+   \footnotesize\sffamily
+   \begin{minipage}{0.95\textwidth}
+   Copyright\ \copyright\ \ 2016\ \ Thomas E.\ Vaughan.
+   PDF image generated on \mydate.
+   Permission is granted to copy, distribute and/or modify this document under
+   the terms of the GNU Free Documentation License, Version 1.3 or any later
+   version published by the Free Software Foundation; with no Invariant
+   Sections, no Front-Cover Texts, and no Back-Cover Texts.  A copy of the
+   license is included in the section entitled ``GNU Free Documentation
+   License''.
+   \end{minipage}%
+}
+\cfoot{}
+\rfoot{%
+   \begin{minipage}{0.05\textwidth}
+   \begin{flushright}
+   \includegraphics[width=0.85\textwidth]{logo}
+   \end{flushright}
+   \end{minipage}%
+}
+
+\begin{document}
+
+\thispagestyle{fancy}
+
+%\begin{abstract}
+%
+%This is the abstract.
+%
+%\end{abstract}
+
+\section{Introduction}
+
+Suppose that one wants to find the best-fit curve through a set of points in
+the plane. If the curve can be expressed as a linear combination of functions
+of the independent variable, and if, by ``best'', one be satisfied with finding
+for the linear combination the coefficients that minimize the sum of squared
+deviations between the points and the curve, then one can find the best-fit
+curve by way of \emph{linear regression}. The main benefits of linear
+regression include determinism in the time required to compute the fit and
+certainty that the solution is in fact the best solution. The main problem,
+however, is that linear regression cannot always be used. For example, if one
+want to fit a sinusoidal model to a set of points in the plane, then the
+frequency of the oscillation cannot be found by linear regression because the
+frequency is not a coefficient of any basis function. However, if the frequency
+be known, then the phase can be found by linear regression because any sinusoid
+can be expressed as the sum of the sine and the cosine, here used as basis
+functions. The relationship between the coefficients of those basis functions
+gives the phase of the best-fit curve.
+
+The phrase, ``\htmladdnormallink{linear
+regression}{https://en.wikipedia.org/wiki/Linear\_regression}'' is associated
+with a wide variety of mathematical procedures. The present document describes
+a C++ library for computing a linear regression to find the coefficient for
+every basis function of the same, single, independent variable.  Although we
+express the basis in terms of a single independent variable, the output of each
+basis function serves effectively as a separate independent variable.  So we
+implement a special case of \emph{multiple} linear regression, where each of
+the multiple independent variables corresponds to a basis function of a single,
+underlying independent variable.
+
+There are also different ways to compute the same regression. We have chosen
+the \htmladdnormallink{method recommended in
+Version~3.2.8}{http://eigen.tuxfamily.org/dox/group\_\_TutorialLinearAlgebra.html\#TutorialLinAlgLeastsquares}
+of the \htmladdnormallink{Eigen header-only C++
+library}{http://eigen.tuxfamily.org/index.php?title=Main\_Page}.  This is the
+method involving Jacobi \htmladdnormallink{singular-value
+decomposition}{https://en.wikipedia.org/wiki/Singular\_value\_decomposition}.
+
+\section{General Formulation}
+
+Suppose that one wants to find by linear regression the column matrix
+\begin{equation}
+   \mathbf{c} =
+   \begin{pmatrix}
+      c_1\\
+      \vdots\\
+      c_n
+   \end{pmatrix}
+\end{equation}
+of parameters of the function
+\begin{equation}
+   f_{\mathbf{c}}(x) = \sum_{i=1}^{n} c_i b_i(x),
+\end{equation}
+where the basis functions are $b_1, \ldots, b_n$. What one wants, then, is the
+solution $\mathbf{c}$ to the over-determined system
+\begin{equation}
+   \mathbf{B} \mathbf{c} = \mathbf{y},
+\end{equation}
+where
+\begin{equation}
+   \mathbf{B} =
+   \begin{pmatrix}
+      b_1(x_1) & \cdots & b_n(x_1)\\
+      \vdots   &        & \vdots\\
+      b_1(x_m) & \cdots & b_n(x_m)
+   \end{pmatrix};
+\end{equation}
+\begin{equation}
+   \mathbf{y} =
+   \begin{pmatrix}
+      y_1\\
+      \vdots\\
+      y_m
+   \end{pmatrix};
+\end{equation}
+and $(x_1,y_1), \ldots, (x_m,y_m)$ are the measured points that the curve
+represented by $f_{\mathbf{c}}$ best fits.
+
+If, in a C++ program that includes the headers for Eigen~3, the variable
+\texttt{B} of type \texttt{MatrixXd} contain the value of every basis function
+evaluated at every measured $x$, and if the variable \texttt{y} of type
+\texttt{VectorXd} contain every measured $y$, then the following C++ expression
+will return the solution (of type \texttt{VectorXd}):
+\begin{small}
+\begin{verbatim}
+B.jacobiSvd(ComputeThinU | ComputeThinV).solve(y)
+\end{verbatim}
+\end{small}
+The flags that are combined by the logical OR operation indicate that only the
+minimal decomposition necessary for solving is calculated. (The full
+singular-value decomposition is not necessary for solving the system.)
+
+%\bibliographystyle{plainnat}
+%
+%\begin{thebibliography}{}
+%
+%\bibitem[LastName1 et al.(Year)LastName1, LastName2, and LastName3]{CiteTag}
+%LastName1, Initials1, Initials2 LastName2, and Initials3 LastName3\ \
+%``Title of Article''\ \ {\it Title of Journal}, {\bf Volume}: Pages, Year.
+%
+%\end{thebibliography}
+
+\newpage
+
+\input{fdl-1.3}
+
+\end{document}
+
