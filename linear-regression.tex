@@ -88,22 +88,32 @@
 
 \section{Introduction}
 
-Suppose that one wants to find the best-fit curve through a set of points in
-the plane. If the curve can be expressed as a linear combination of functions
-of the independent variable, and if, by ``best'', one be satisfied with finding
-for the linear combination the coefficients that minimize the sum of squared
-deviations between the points and the curve, then one can find the best-fit
-curve by way of \emph{linear regression}. The main benefits of linear
-regression include determinism in the time required to compute the fit and
-certainty that the solution is in fact the best solution. The main problem,
-however, is that linear regression cannot always be used. For example, if one
-want to fit a sinusoidal model to a set of points in the plane, then the
-frequency of the oscillation cannot be found by linear regression because the
-frequency is not a coefficient of any basis function. However, if the frequency
-be known, then the phase can be found by linear regression because any sinusoid
-can be expressed as the sum of the sine and the cosine, here used as basis
-functions. The relationship between the coefficients of those basis functions
-gives the phase of the best-fit curve.
+\emph{Linear regression} allows one to find the best-fit curve through a set of
+points in the plane. The ``linear'' in ``linear regression'' refers not to the
+shape of the best-fit curve (for it need not be a straight line) but to a
+different aspect of the function that represents the curve. The function
+representing the best-fit curve must be a \emph{linear combination} of basis
+functions, each of which may be a \emph{non}-linear function of the independent
+variable.  So, if the curve can be expressed as a linear combination of
+functions of the independent variable, and if, by ``best'', one mean that the
+coefficients of the linear combination are chosen to minimize the sum of
+squared deviations between the points and the curve, then one can find the
+best-fit curve by way of linear regression.
+
+The main benefits of linear regression include determinism in the time required
+to compute the fit and certainty that the solution is in fact the best
+solution. The main problem, however, is that linear regression cannot always be
+used.
+
+For example, if one want to fit a sinusoidal model to a set of points in the
+plane, then the phase can be extracted from the fit, but the frequency cannot
+be extracted. The frequency of the oscillation cannot be found by linear
+regression because the frequency is not the coefficient of any basis function
+in the linear combination.  However, if the frequency be known, then the phase
+can be found by linear regression because any sinusoid can be expressed as the
+sum of the sine and the cosine, here used as basis functions. The relationship
+between the coefficients of the sine and cosine basis functions gives the phase
+of the best-fit curve.
 
 The phrase, ``\htmladdnormallink{linear
 regression}{https://en.wikipedia.org/wiki/Linear\_regression}'' is associated
