@@ -1,8 +1,8 @@
 
 # Linear Regression and the Best-Fit Curve
 
-Linear regression can be used to find the best-fit curve to a set of points in
-the plane.
+Linear regression can be used to find the best-fit curve through a set of
+points in the plane.
 
 The present project aims to produce a PDF document, a C++ library, and a
 command-line tool (whose source is C++).
