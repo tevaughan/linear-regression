@@ -4,8 +4,8 @@
 Linear regression can be used to find the best-fit curve through a set of
 points in the plane.
 
-The present project aims to produce a PDF document, a C++ library, and a
-command-line tool (whose source is C++).
+The linear-regression project aims to produce a PDF document, a C++ library,
+and a command-line tool (whose source is C++).
 
 The document describes
  - the mathematics of linear regression,
