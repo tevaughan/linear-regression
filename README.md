@@ -10,8 +10,8 @@ command-line tool (whose source is C++).
 The document describes
  - the mathematics of linear regression,
  - how to set up a linear regression in [Eigen 3][1]
- - how to use the present library, and
- - how to use the command-line tool.
+ - how to use the linear-regression library, and
+ - how to use the linear-regression command-line tool.
 
 At present, the document does a brief sketch of the mathematics and shows one
 way to set up the linear regression in Eigen 3.
