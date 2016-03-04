@@ -1,5 +1,5 @@
 
-\newcommand{\doctitle}{Framework for Linear Regression in C++}
+\newcommand{\doctitle}{Linear Regression, the Best-Fit Curve, and C++}
 
 \documentclass[twocolumn]{article}
 
@@ -86,6 +86,20 @@
 %
 %\end{abstract}
 
+\begin{figure}
+   \begin{center}
+      \includegraphics[width=0.95\columnwidth]{sinusoid}
+      \caption{%
+         Linear regression that finds the best-fit sinusoidal model to a set of
+         100 measured points.  Note that only the amplitude, phase, and
+         (vertical) offset of a sinusoidal model can be found by linear
+         regression. The wavelength must be known ahead of time. Here, the
+         wavelength is 360$^\circ$.%
+      }
+      \label{fig:sinusoid}
+   \end{center}
+\end{figure}
+
 \section{Introduction}
 
 \emph{Linear regression} allows one to find the best-fit curve through a set of
@@ -93,21 +107,20 @@ points in the plane. The ``linear'' in ``linear regression'' refers not to the
 shape of the best-fit curve (for it need not be a straight line) but to an
 aspect of the expression that represents the curve. The function corresponding
 to the best-fit curve must be expressed as a \emph{linear combination} of basis
-functions; extremely convenient and useful, however, is that each basis
-function may be a \emph{non}-linear function of its variable.  So, if the curve
-can be expressed as a linear combination of functions of the same variable, and
-if, by ``best'', one mean that the coefficients of the linear combination are
-chosen to minimize the sum of squared deviations between the points and the
-curve, then one can find the best-fit curve by way of linear regression.
+functions; extremely convenient and useful is that each basis function may be a
+\emph{non}-linear function of its variable.  So, if the curve can be expressed
+as a linear combination of functions of the same variable, and if, by ``best'',
+one mean that the coefficients of the linear combination are chosen to minimize
+the sum of squared deviations between the points and the curve, then one can
+find the best-fit curve by way of linear regression.
 
 For example, in the $x$-$y$ plane, a curve $y = f(x)$ might correspond to a
-functional relation whose expression is
+function whose expression is
 \begin{equation}
    f(x) = c_1 \cos\tfrac{2\pi x}{\lambda} + c_2 \sin\tfrac{2\pi x}{\lambda}.
 \end{equation}
 In this case, we call $x$ the \emph{independent variable} and $y$ the
-\emph{dependent variable}. Supposing that we have a physical system, measured
-in terms of spatial units, we represent the wavelenth of the sinusoidal model
+\emph{dependent variable}.  We represent the wavelenth of the sinusoidal model
 as $\lambda$.  The expression of $f(x)$ is the linear combination of two
 functions of $x$. The coefficients of the linear combination are $c_1$ and
 $c_2$, each of which, like $\lambda$, has the dimension of length. The
@@ -126,7 +139,8 @@ $c_2$ such that the sum
    \left[y_1 - f(x_1)\right]^2 + \left[y_2 - f(x_2)\right]^2 + \left[y_3 -
    f(x_3)\right]^2
 \end{equation}
-is minimized.
+is minimized. Figure~\ref{fig:sinusoid} shows a sinusoidal linear regression
+for a set of 100 measured points.
 
 The main benefits of linear regression include determinism in the time required
 to compute the fit and certainty that the solution is in fact the best

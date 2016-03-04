@@ -1,0 +1,14 @@
+
+set grid
+set key below
+set output "sinusoid.pdf"
+set term pdfcairo
+set xlabel "x (degrees)"
+set xrange [0:360]
+set xtics 0, 30
+set ylabel "y"
+
+plot\
+ "sinusoid.dat" using ($1*180.0/pi):2 with points title "data",\
+ "sinusoid.dat" using ($1*180.0/pi):3 with lines title "fit"
+

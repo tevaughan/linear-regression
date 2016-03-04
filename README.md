@@ -1,5 +1,5 @@
 
-# Linear Regression and the Best-Fit Curve
+# Linear Regression, the Best-Fit Curve, and C++
 
 **Linear regression can be used to find the best-fit curve through a set of
 points in the plane.**
