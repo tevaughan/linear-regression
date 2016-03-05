@@ -14,8 +14,16 @@ The document describes
  - how to use the linear-regression library, and
  - how to use the linear-regression command-line tool.
 
-At present, the document does a brief sketch of the mathematics and shows one
-way to set up the linear regression in Eigen 3.
+At present, the document shows all of the mathematics for the straight-forward,
+computationally fastest approach. Also, the document gives a brief mathematical
+introduction that leads to the slower, but more numerically robust SVD-based
+approach. While the document does not go into the details of the mathematics
+for the SVD-based approach, the document does show how to code up the SVD-based
+linear regression in Eigen 3.
+
+There is an example application (which generates a figure for the document).
+This application is a fully working implementation of the SVD-based approach to
+linear regression.
 
 The library and executable are not written yet.
 
