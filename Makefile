@@ -1,4 +1,10 @@
 
+# Copyright 2016  Thomas E. Vaughan
+#
+# The present software is redistributable under the terms of the GNU LESSER
+# GENERAL PUBLIC LICENSE, which is must be distributed in the file, 'LICENSE',
+# along with the software.
+
 # --- BEG Automatic dependencies for C and C++ files. ---
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 DEPDIR := .d

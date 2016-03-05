@@ -197,10 +197,70 @@ of parameters of the function
 \begin{equation}
    f_{\mathbf{c}}(x) = \sum_{i=1}^{n} c_i b_i(x),
 \end{equation}
-where the basis functions are $b_1, \ldots, b_n$. What one wants, then, is the
-solution $\mathbf{c}$ to the over-determined system
+where the basis functions are $b_1,$ $\ldots,$ $b_n$. For a set $\{(x_1,y_1),$
+$\ldots,$ $(x_m,y_m)\}$ of $m$ measured points, the sum of squared
+deviations---each between the fit and one of the measurements---is
 \begin{equation}
-   \mathbf{B} \mathbf{c} = \mathbf{y},
+   \sum_{j=1}^{m} \left[ y_j - \sum_{i=1}^{n} c_i b_i(x_j) \right]^2.
+\end{equation}
+
+To find the best fit, one takes the derivative of this expression with respect
+to each of the coefficients and sets that derivative to zero. Taking the
+derivative with respect to $c_k$ and setting the result to zero (and then
+dividing both sides of the equation by two), one finds
+\begin{equation}
+   \sum_{j=1}^{m} \left[ y_j - \sum_{i=1}^{n} c_i \: b_i(x_j) \right] b_k(x_j)
+   = 0.
+\end{equation}
+So, for every $k$ between $1$ and $n$ (inclusive), one has
+\begin{equation}
+   \sum_{j=1}^{m} \sum_{i=1}^{n} c_i \: b_i(x_j) \: b_k(x_j) = \sum_{j=1}^{m}
+   y_j \: b_k(x_j).
+   \label{eq:deriv-result}
+\end{equation}
+
+\subsection{The Straight-Forward and Fast Approach}
+
+Equation~\ref{eq:deriv-result} is the same as the matrix equation,
+\begin{equation}
+   \boldsymbol{\beta} \mathbf{c} = \mathbf{d}
+   \label{eq:beta}
+\end{equation}
+\begin{equation}
+   \begin{pmatrix}
+      \beta_{11} & \cdots & \beta_{n1}\\
+      \vdots & & \vdots\\
+      \beta_{1n} & \cdots & \beta_{nn}
+   \end{pmatrix}
+   \begin{pmatrix}
+      c_1\\
+      \vdots\\
+      c_n
+   \end{pmatrix}
+   =
+   \begin{pmatrix}
+      \sum_{j=1}^{m} y_j b_1(x_j)\\
+      \vdots\\
+      \sum_{j=1}^{m} y_j b_n(x_j)
+   \end{pmatrix},
+\end{equation}
+where
+\begin{equation}
+   \beta_{ik} = \beta_{ki} = \sum_{j=1}^m b_i(x_j) \: b_k(x_j).
+\end{equation}
+Inverting $\boldsymbol{\beta}$ to solve for $\mathbf{c}$ is the computationally
+fastest approach, but it is, in some cases, not so numerically robust an
+approach as one might prefer.
+
+\subsection{Numerical Robustness}
+
+Another approach picks up where the previous approach ends. One notices that
+\begin{equation}
+   \boldsymbol{\beta} = \mathbf{B}^{\text{T}} \mathbf{B}
+\end{equation}
+and
+\begin{equation}
+   \mathbf{d} = \mathbf{B}^{\text{T}} \mathbf{y},
 \end{equation}
 where
 \begin{equation}
@@ -209,18 +269,44 @@ where
       b_1(x_1) & \cdots & b_n(x_1)\\
       \vdots   &        & \vdots\\
       b_1(x_m) & \cdots & b_n(x_m)
-   \end{pmatrix};
+   \end{pmatrix}
 \end{equation}
+and
 \begin{equation}
    \mathbf{y} =
    \begin{pmatrix}
       y_1\\
       \vdots\\
       y_m
-   \end{pmatrix};
+   \end{pmatrix}.
 \end{equation}
-and $(x_1,y_1), \ldots, (x_m,y_m)$ are the measured points that the curve
-represented by $f_{\mathbf{c}}$ best fits.
+With these definitions, one sees that Equation~\ref{eq:beta} becomes
+\begin{equation}
+   \mathbf{B}^{\text{T}} \mathbf{B} \mathbf{c} = \mathbf{B}^{\text{T}}
+   \mathbf{y}
+\end{equation}
+\begin{equation}
+   \mathbf{B}^{\text{T}} [\mathbf{B} \mathbf{c} - \mathbf{y}] =
+   \mathbf{0}_{n \times 1},
+   \label{eq:B}
+\end{equation}
+where $\mathbf{0}_{n \times 1}$ is the zero-valued column matrix with $n$ rows.
+This suggests that $\mathbf{B} \mathbf{c}$ and $\mathbf{y}$ are nearly equal in
+some sense.  What one wants, then, is the solution $\mathbf{c}$ to the
+over-determined system expressed in Equation~\ref{eq:B}. The system is said to
+be overdertermined because $\mathbf{B}$ is taller than $\mathbf{c}$; that is,
+$m > n$. The solution can be computed by way of the singular-value
+decomposition (SVD) of $\mathbf{B}$. The numerical stability of this approach,
+which sacrifices some speed, is better than that of the previous approach. One
+may find the details of the SVD approach in a textbook or in the Wikipedia page
+on SVD.
+
+However, one might prefer the first, straight-forward approach (the direct
+solution to Equation~\ref{eq:beta}) in a circumstance in which one needs so
+much speed as possible, and one knows that the numerical accuracy will be
+sufficient for every $\boldsymbol{\beta}$ that one will use.
+
+\subsection{Numerically Robust Implementation Via Eigen}
 
 If, in a C++ program that includes the headers for Eigen~3, the variable
 \texttt{B} of type \texttt{MatrixXd} contain the value of every basis function
