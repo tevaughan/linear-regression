@@ -1,4 +1,12 @@
 
+% Copyright 2016  Thomas E. Vaughan
+%
+% The present document is distributed under the terms of the GNU Free
+% Documentation License.
+%
+% Other source code released with the document is distributed under the terms
+% of the GNU Lesser General Public License.
+
 \newcommand{\doctitle}{Linear Regression, the Best-Fit Curve, and C++}
 
 \documentclass[twocolumn]{article}
@@ -107,34 +115,31 @@ points in the plane. The ``linear'' in ``linear regression'' refers not to the
 shape of the best-fit curve (for it need not be a straight line) but to an
 aspect of the expression that represents the curve. The function corresponding
 to the best-fit curve must be expressed as a \emph{linear combination} of basis
-functions; extremely convenient and useful is that each basis function may be a
-\emph{non}-linear function of its variable.  So, if the curve can be expressed
-as a linear combination of functions of the same variable, and if, by ``best'',
-one mean that the coefficients of the linear combination are chosen to minimize
-the sum of squared deviations between the points and the curve, then one can
-find the best-fit curve by way of linear regression.
+functions; an extremely convenient and useful fact is that each basis function
+may be a \emph{non}-linear function of its variable.  So, if the curve can be
+expressed as a linear combination of functions of the same variable, and if, by
+``best'', one mean that the coefficients of the linear combination are chosen
+to minimize the sum of squared deviations between the points and the curve,
+then one can find the best-fit curve by way of linear regression.
 
 For example, in the $x$-$y$ plane, a curve $y = f(x)$ might correspond to a
 function whose expression is
 \begin{equation}
    f(x) = c_1 \cos\tfrac{2\pi x}{\lambda} + c_2 \sin\tfrac{2\pi x}{\lambda}.
 \end{equation}
-In this case, we call $x$ the \emph{independent variable} and $y$ the
-\emph{dependent variable}.  We represent the wavelenth of the sinusoidal model
-as $\lambda$.  The expression of $f(x)$ is the linear combination of two
-functions of $x$. The coefficients of the linear combination are $c_1$ and
-$c_2$, each of which, like $\lambda$, has the dimension of length. The
-functions that are linearly combined are called \emph{basis functions}, for
-they form the basis for the range of shapes that the curve might take on as the
-coefficients change in value.  We must, in order for the linear regression to
-find $c_1$ and $c_2$, have at least three points---in general, at least one
-point more than the number of coefficients to be solved for---at least three
-points that constrain the trajectory of the curve.  Suppose that we have a set
-$\{(x_1, y_1), (x_2, y_2), (x_3, y_3)\}$ of exactly three measurements, each of
-which corresponds to a point in the $x$-$y$ plane.  The linear regression
-determines $c_1$ and $c_2$ so that the sum of squared deviations between the
-points and the curve is minimized.  That is, the regression finds $c_1$ and
-$c_2$ such that the sum
+In this case, one calls $x$ the \emph{independent variable} and $y$ the
+\emph{dependent variable}.  The wavelenth of the sinusoidal model is $\lambda$.
+The expression for $f(x)$ is the linear combination of two functions of $x$.
+The coefficients of the linear combination are $c_1$ and $c_2$.  The functions
+that are linearly combined are called \emph{basis functions}.  For linear
+regression with the model in the present example, there must be at least three
+constraining points---in general, at least one point more than the number of
+coefficients to be solved for---at least three points that constrain the
+trajectory of the curve.  Suppose that one has a set $\{(x_1, y_1),$ $(x_2,
+y_2),$ $(x_3, y_3)\}$ of exactly three measurements, each of which corresponds
+to a point in the $x$-$y$ plane.  The linear regression determines $c_1$ and
+$c_2$ so that the sum of squared deviations between the points and the curve is
+minimized.  That is, the regression finds $c_1$ and $c_2$ such that the sum
 \begin{equation}
    \left[y_1 - f(x_1)\right]^2 + \left[y_2 - f(x_2)\right]^2 + \left[y_3 -
    f(x_3)\right]^2
@@ -151,31 +156,39 @@ the vertical-offset term is not considered.
 The main benefits of linear regression include determinism in the time required
 to compute the fit and certainty that the solution is in fact the best
 solution. The main problem, however, is that linear regression cannot always be
-used.  Returning to our example, we note that if one want to fit a sinusoidal
+used.  Returning to the example, one notes that if one want to fit a sinusoidal
 model to a set of points in the plane, then the phase can be extracted from the
 fit, but the wavelength cannot be extracted. The wavelength cannot be found by
 linear regression because the wavelength is not the coefficient of a basis
 function.  However, if the wavelength be known, then the linear regression can
 be peformed, and the phase can be extracted from the ratio $c_2/c_1$.
 
+The phrase, ``independent variable'' has at least a couple of different
+meanings. Although each basis function is expressed in terms of the same
+independent variable, the output of each basis function serves in a different
+sense as a separate independent variable. So ``independent variable'' has a
+different meaning in each of two different contexts.
+\begin{itemize}
+   \item In Sense~1, the context of a curve in the plane, the abscissa
+      represents the independent variable.
+   \item However, in Sense~2, the context of \emph{multiple linear regression},
+      each term multiplied by a coefficient represents an independent variable.
+\end{itemize}
+In multiple linear regression, there are multiple independent variables, each
+multiplied by a coefficient, and the coefficients are determined by minimizing
+the sum of squared deviations.  The present document describes a special case
+of multiple linear regression. In this case, each of the multiple independent
+variables (in Sense 2) is really the output of a basis function of the same
+underlying independent variable (in Sense 1). So each basis function transforms
+the same underlying independent variable into a new, different independent
+variable, for the purpose of the regression.
+
 The phrase, ``\htmladdnormallink{linear
 regression}{https://en.wikipedia.org/wiki/Linear\_regression}'' is associated
 with a wide variety of mathematical procedures. The present document describes
-a C++-based approach to the computation of a linear regression.  Although we
-express each of our basis functions in terms of the same independent variable,
-the output of each basis function serves in a different sense as a separate
-independent variable. That is, the phrase ``independent variable'' has a
-different meaning in each of two different contexts. In Sense~1, the context of
-a curve in the plane, the abscissa represents the independent variable.
-However, in Sense~2, the context of linear regression, each term multiplied by
-a coefficient represents an independent variable. In \emph{multiple linear
-regression}, there are multiple independent variables, each multiplied by a
-coefficient, and the coefficients are determined by minimizing the sum of
-squared deviations.  We end up describing here a special case of multiple
-linear regression. In our case, each of the multiple independent variables (in
-Sense 2) is really the output of a basis function of the same underlying
-independent variable (in Sense 1).  There are different ways to compute the
-same regression. We have chosen the \htmladdnormallink{method recommended in
+a C++-based approach to the computation of a linear regression.  There are
+different ways to compute the same regression. Documented here is the
+\htmladdnormallink{method recommended in
 Version~3.2.8}{http://eigen.tuxfamily.org/dox/group\_\_TutorialLinearAlgebra.html\#TutorialLinAlgLeastsquares}
 of the \htmladdnormallink{Eigen header-only C++
 library}{http://eigen.tuxfamily.org/index.php?title=Main\_Page}.  This is the
