@@ -208,13 +208,13 @@ Suppose that one wants to find by linear regression the column matrix
 \end{equation}
 of parameters of the function
 \begin{equation}
-   f_{\mathbf{c}}(x) = \sum_{i=1}^{n} c_i b_i(x),
+   f_{\mathbf{c}}(x) = \sum_{i=1}^{n} c_i \: b_i(x),
 \end{equation}
 where the basis functions are $b_1,$ $\ldots,$ $b_n$. For a set $\{(x_1,y_1),$
 $\ldots,$ $(x_m,y_m)\}$ of $m$ measured points, the sum of squared
 deviations---each between the fit and one of the measurements---is
 \begin{equation}
-   \sum_{j=1}^{m} \left[ y_j - \sum_{i=1}^{n} c_i b_i(x_j) \right]^2.
+   \sum_{j=1}^{m} \left[ y_j - \sum_{i=1}^{n} c_i \: b_i(x_j) \right]^2.
 \end{equation}
 
 To find the best fit, one takes the derivative of this expression with respect
@@ -252,9 +252,9 @@ Equation~\ref{eq:deriv-result} is the same as the matrix equation,
    \end{pmatrix}
    =
    \begin{pmatrix}
-      \sum_{j=1}^{m} y_j b_1(x_j)\\
+      \sum_{j=1}^{m} y_j \: b_1(x_j)\\
       \vdots\\
-      \sum_{j=1}^{m} y_j b_n(x_j)
+      \sum_{j=1}^{m} y_j \: b_n(x_j)
    \end{pmatrix},
 \end{equation}
 where
