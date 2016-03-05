@@ -4,8 +4,9 @@
 **Linear regression can be used to find the best-fit curve through a set of
 points in the plane.**
 
-The linear-regression project aims to produce a [PDF document], a C++ library,
-and a command-line tool (whose source is C++).
+The linear-regression project aims to produce a PDF document (the most recent
+version of which can be obtained on the [release page]), a C++ library, and a
+command-line tool (whose source is C++).
 
 The document describes
  - the mathematics of linear regression,
@@ -18,6 +19,6 @@ way to set up the linear regression in Eigen 3.
 
 The library and executable are not written yet.
 
-[PDF document]: https://github.com/tevaughan/linear-regression/releases/download/v0.2/linear-regression.pdf
+[release page]: https://github.com/tevaughan/linear-regression/releases
 [Eigen 3]: http://eigen.tuxfamily.org/index.php?title=Main_Page
 
