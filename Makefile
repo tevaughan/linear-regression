@@ -9,6 +9,7 @@
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 DEPDIR := .d
 $(shell mkdir -p $(DEPDIR) >/dev/null)
+SRCS=$(shell echo *.cpp)
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
 COMPILE.c = $(CC) $(DEPFLAGS) $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 COMPILE.cc = $(CXX) $(DEPFLAGS) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
@@ -52,6 +53,9 @@ all : $(PDFNAME)
 $(PDFNAME) : $(TEXNAME) logo.pdf fdl-1.3.tex $(PROGRAMS) $(PROG_PDF)
 	pdflatex $(TEXNAME)
 	pdflatex $(TEXNAME)
+
+sinusoid : sinusoid.o
+	$(CXX) -o $@ $< $(LDLIBS)
 
 clean :
 	@rm -frv .d

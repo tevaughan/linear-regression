@@ -14,21 +14,37 @@
 
 #include <Eigen/SVD>  // for VectorXd, MatrixXd, MatrixXd::jacobiSvd()
 
+#include "basis.hpp"
+
 using namespace Eigen;
+using namespace linreg;
 using namespace std;
 
-typedef double (*basis_func)(double);
-typedef vector<basis_func> func_basis;
+double unit(double)
+{
+   return 1.0;
+}
+
+double mycos(double x)
+{
+   return cos(x);
+}
+
+double mysin(double x)
+{
+   return sin(x);
+}
 
 int main(int, char **argv)
 {
-   func_basis const basis{cos, sin};
-   unsigned constexpr M = 100;      // Number of measurements.
-   unsigned const N = basis.size(); // Number of coefficients.
+   auto const b = make_basis(unit, mycos, mysin);
+   unsigned constexpr M = 100;  // Number of measurements.
+   unsigned const N = b.size(); // Number of coefficients.
    MatrixXd B(M, N);
    VectorXd c(N), x(M), y(M);
-   c[0] = 2.1;
-   c[1] = 2.4;
+   c[0] = 1.0;
+   c[1] = 2.0;
+   c[2] = 3.0;
    default_random_engine generator;
    normal_distribution<double> distribution;
    double constexpr X_LO = 0.0;
@@ -37,22 +53,17 @@ int main(int, char **argv)
    for (unsigned i = 0; i < M; ++i) {
       x(i) = X_LO + i * DX;
       y(i) = distribution(generator); // Start with noise.
-      for (unsigned j = 0; j < N; ++j) {
-         B(i, j) = basis[j](x(i));
-         y(i) += c[j] * B(i, j); // Add in signal.
-      }
+      B.row(i) = b(x(i));             // Evaluate basis functions.
+      y(i) += c.dot(B.row(i));        // Add in signal.
    }
-   MatrixXd const c_fit = B.jacobiSvd(ComputeThinU | ComputeThinV).solve(y);
+   VectorXd const c_fit = B.jacobiSvd(ComputeThinU | ComputeThinV).solve(y);
    cerr << argv[0] << ": coefs:";
    for (unsigned j = 0; j < N; ++j) {
-      cerr << " " << c[j];
+      cerr << " " << c_fit[j];
    }
    cerr << endl;
    for (unsigned i = 0; i < M; ++i) {
-      double fit_y = 0.0;
-      for (unsigned j = 0; j < N; ++j) {
-         fit_y += c[j] * basis[j](x(i));
-      }
+      double const fit_y = c_fit.dot(b(x(i)));
       cout << x(i) << " " << y(i) << " " << fit_y << endl;
    }
 }
