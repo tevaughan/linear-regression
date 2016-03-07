@@ -163,7 +163,7 @@ namespace linreg
       ///         - etc.
       Eigen::VectorXd operator()(double const x) const override;
 
-      /// \return Degree of polynomial. This is the same as the number of
+      /// \return One more than degree of polynomial. This is the number of
       ///         elements in the vector returned by operator().
       unsigned size() const override
       {
