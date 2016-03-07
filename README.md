@@ -27,6 +27,9 @@ linear regression.
 
 The library and executable are not written yet.
 
+ - [Build]
+
 [release page]: https://github.com/tevaughan/linear-regression/releases
 [Eigen 3]: http://eigen.tuxfamily.org/index.php?title=Main_Page
+[Build]: ./BUILD.md
 
