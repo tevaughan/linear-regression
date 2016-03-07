@@ -39,7 +39,11 @@ namespace linreg
       /// \return Value of each basis function at given value of its argument.
       virtual Eigen::VectorXd operator()(double const x) const = 0;
 
+      /// \return Number of elements in vector returned by operator().
       virtual unsigned size() const = 0;
+
+      /// Make sure that descendant's destructor is called.
+      virtual ~abstract_basis() = default;
    };
 
    /// Collection of basis functions for a linear regression.
@@ -60,6 +64,9 @@ namespace linreg
       std::deque<PF> d_;
 
    public:
+      /// Make sure that descendant's destructor is called.
+      virtual ~basis() = default;
+
       /// \return Value of each basis function at given value of its argument.
       Eigen::VectorXd operator()(double const x) const override;
 
@@ -124,13 +131,12 @@ namespace linreg
       return r;
    }
 
-   /// Type of any simple, global basis function.
-   typedef double (*gfunc)(double);
-
    /// Base class for standard bases, such as polynomial_basis and
    /// fourier_basis.
-   class standard_basis : public abstract_basis
-   {
+   struct standard_basis : public abstract_basis {
+      /// Make sure that descendant's destructor is called.
+      virtual ~standard_basis() = default;
+
    protected:
       unsigned degree_;
 
@@ -147,6 +153,9 @@ namespace linreg
       {
       }
 
+      /// Make sure that descendant's destructor is called.
+      virtual ~polynomial_basis() = default;
+
       /// \return Value of each basis function at given value of its argument.
       ///         - Element 0 corresponds to the constant function f(x) = 1;
       ///         - Element 1 corresponds to f(x) = x;
@@ -162,6 +171,7 @@ namespace linreg
       }
    };
 
+   /// Fourier basis of finite degree.
    struct fourier_basis : public standard_basis {
       /// Construct from specified degree of fourier basis. The number of basis
       /// functions in the basis will be equal to one more than twice the
@@ -169,6 +179,9 @@ namespace linreg
       fourier_basis(unsigned const d) : standard_basis(d)
       {
       }
+
+      /// Make sure that descendant's destructor is called.
+      virtual ~fourier_basis() = default;
 
       /// \return Value of each basis function at given value of its argument.
       ///         - Element 0 corresponds to the constant function f(x) = 1;
