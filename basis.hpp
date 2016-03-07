@@ -138,8 +138,12 @@ namespace linreg
       virtual ~standard_basis() = default;
 
    protected:
+      /// Indicator of the number of basis functions. For a polynomial, the
+      /// number of basis functions is one more than the degree. For a fourier
+      /// basis, the number is one more than twice the degree.
       unsigned degree_;
 
+      /// Initialize degree on construction.
       standard_basis(unsigned const d) : degree_(d)
       {
       }
