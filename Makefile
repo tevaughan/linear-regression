@@ -5,7 +5,11 @@
 # GENERAL PUBLIC LICENSE, which is must be distributed in the file, 'LICENSE',
 # along with the software.
 
-# --- BEG Automatic dependencies for C and C++ files. ---
+CXXFLAGS = -g -O0 -std=c++11 -Wall
+CPPFLAGS = -I/usr/include/eigen3
+LDLIBS   = -lm
+
+# ---------- BEG Automatic dependencies for C and C++ files. ----------
 # http://make.mad-scientist.net/papers/advanced-auto-dependency-generation/
 DEPDIR := .d
 $(shell mkdir -p $(DEPDIR) >/dev/null)
@@ -24,11 +28,7 @@ POSTCOMPILE = mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d
 	$(POSTCOMPILE)
 $(DEPDIR)/%.d: ;
 .PRECIOUS: $(DEPDIR)/%.d
-# --- END Automatic dependencies for C and C++ files. ---
-
-CXXFLAGS = -g -O0 -std=c++11 -Wall
-CPPFLAGS = -I/usr/include/eigen3
-LDLIBS   = -lm
+# ---------- END Automatic dependencies for C and C++ files. ----------
 
 PROGRAMS = sinusoid
 PROG_PDF = $(PROGRAMS:=.pdf)
