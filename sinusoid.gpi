@@ -16,5 +16,6 @@ set ylabel "y"
 
 plot\
  "sinusoid.dat" using ($1*180.0/pi):2 with points title "data",\
- "sinusoid.dat" using ($1*180.0/pi):3 with lines title "fit"
+ "sinusoid.dat" using ($1*180.0/pi):3 with lines title "fourier fit",\
+ "sinusoid.dat" using ($1*180.0/pi):4 with lines title "polynomial fit"
 

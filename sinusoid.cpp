@@ -12,7 +12,7 @@
 #include <iostream> // for cout, endl
 #include <random>   // for default_random_engine, normal_distribution<>
 
-#include <Eigen/SVD>  // for VectorXd, MatrixXd, MatrixXd::jacobiSvd()
+#include <Eigen/SVD> // for VectorXd, MatrixXd, MatrixXd::jacobiSvd()
 
 #include "basis.hpp" // for fourier_basis
 
@@ -23,13 +23,15 @@ using namespace std;
 int main(int, char **argv)
 {
    fourier_basis const fb(1);
-   unsigned constexpr M = 100;   // Number of measurements.
-   unsigned const N = fb.size(); // Number of coefficients.
-   MatrixXd B(M, N);
-   VectorXd c(N), x(M), y(M);
-   c[0] = 1.0;
-   c[1] = 2.0;
-   c[2] = 3.0;
+   polynomial_basis const pb(3);
+   unsigned constexpr M = 100;    // Number of measurements.
+   unsigned const fN = fb.size(); // Number of coefficients for fourier.
+   unsigned const pN = pb.size(); // Number of coefficients for polynomial.
+   MatrixXd fB(M, fN), pB(M, pN);
+   VectorXd fc(fN), x(M), y(M);
+   for (unsigned i = 0; i < fN; ++i) {
+      fc[i] = i + 1.0;
+   }
    default_random_engine generator;
    normal_distribution<double> distribution;
    double constexpr X_LO = 0.0;
@@ -37,19 +39,26 @@ int main(int, char **argv)
    double constexpr DX = (X_HI - X_LO) / (M - 1);
    for (unsigned i = 0; i < M; ++i) {
       x(i) = X_LO + i * DX;
-      y(i) = distribution(generator); // Start with noise.
-      B.row(i) = fb(x(i));            // Evaluate basis functions.
-      y(i) += c.dot(B.row(i));        // Add in signal.
+      y(i) = distribution(generator); // Start with noise in measured data.
+      fB.row(i) = fb(x(i));           // Evaluate basis for fourier.
+      pB.row(i) = pb(x(i));           // Evaluate basis for polynomial.
+      y(i) += fc.dot(fB.row(i));      // Add (fourier) signal to measured data.
    }
-   VectorXd const c_fit = B.jacobiSvd(ComputeThinU | ComputeThinV).solve(y);
-   cerr << argv[0] << ": coefs:";
-   for (unsigned j = 0; j < N; ++j) {
-      cerr << " " << c_fit[j];
+   VectorXd const fc_fit = fB.jacobiSvd(ComputeThinU | ComputeThinV).solve(y);
+   VectorXd const pc_fit = pB.jacobiSvd(ComputeThinU | ComputeThinV).solve(y);
+   cerr << argv[0] << ": fourier coefs:";
+   for (unsigned j = 0; j < fN; ++j) {
+      cerr << " " << fc_fit[j];
+   }
+   cerr << argv[0] << "  polynomial coefs:";
+   for (unsigned j = 0; j < fN; ++j) {
+      cerr << " " << pc_fit[j];
    }
    cerr << endl;
    for (unsigned i = 0; i < M; ++i) {
-      double const fit_y = c_fit.dot(fb(x(i)));
-      cout << x(i) << " " << y(i) << " " << fit_y << endl;
+      double const ffit_y = fc_fit.dot(fb(x(i)));
+      double const pfit_y = pc_fit.dot(pb(x(i)));
+      cout << x(i) << " " << y(i) << " " << ffit_y << " " << pfit_y << endl;
    }
 }
 

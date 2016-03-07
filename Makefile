@@ -26,7 +26,7 @@ $(DEPDIR)/%.d: ;
 .PRECIOUS: $(DEPDIR)/%.d
 # --- END Automatic dependencies for C and C++ files. ---
 
-CXXFLAGS = -std=c++11 -Wall
+CXXFLAGS = -g -O0 -std=c++11 -Wall
 CPPFLAGS = -I/usr/include/eigen3
 LDLIBS   = -lm
 
