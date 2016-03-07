@@ -46,7 +46,11 @@ namespace linreg
       virtual ~abstract_basis() = default;
    };
 
-   /// Collection of basis functions for a linear regression.
+   /// General, custom collection of basis functions for a linear regression.
+   /// An instance of basis can be used when a user-defined collection of basis
+   /// functions is needed. For a standard basis, such as the polynomial basis
+   /// or the Fourier basis, use polynomial_basis or fourier_basis,
+   /// respectively.
    ///
    /// \tparam PF  Type of pointer to function. Typically, an instance of PF
    ///             should be either a regular C-style pointer to a global
