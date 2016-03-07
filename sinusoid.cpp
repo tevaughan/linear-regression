@@ -14,32 +14,17 @@
 
 #include <Eigen/SVD>  // for VectorXd, MatrixXd, MatrixXd::jacobiSvd()
 
-#include "basis.hpp"
+#include "basis.hpp" // for fourier_basis
 
 using namespace Eigen;
 using namespace linreg;
 using namespace std;
 
-double unit(double)
-{
-   return 1.0;
-}
-
-double mycos(double x)
-{
-   return cos(x);
-}
-
-double mysin(double x)
-{
-   return sin(x);
-}
-
 int main(int, char **argv)
 {
-   auto const b = make_basis(unit, mycos, mysin);
-   unsigned constexpr M = 100;  // Number of measurements.
-   unsigned const N = b.size(); // Number of coefficients.
+   fourier_basis const fb(1);
+   unsigned constexpr M = 100;   // Number of measurements.
+   unsigned const N = fb.size(); // Number of coefficients.
    MatrixXd B(M, N);
    VectorXd c(N), x(M), y(M);
    c[0] = 1.0;
@@ -53,7 +38,7 @@ int main(int, char **argv)
    for (unsigned i = 0; i < M; ++i) {
       x(i) = X_LO + i * DX;
       y(i) = distribution(generator); // Start with noise.
-      B.row(i) = b(x(i));             // Evaluate basis functions.
+      B.row(i) = fb(x(i));            // Evaluate basis functions.
       y(i) += c.dot(B.row(i));        // Add in signal.
    }
    VectorXd const c_fit = B.jacobiSvd(ComputeThinU | ComputeThinV).solve(y);
@@ -63,7 +48,7 @@ int main(int, char **argv)
    }
    cerr << endl;
    for (unsigned i = 0; i < M; ++i) {
-      double const fit_y = c_fit.dot(b(x(i)));
+      double const fit_y = c_fit.dot(fb(x(i)));
       cout << x(i) << " " << y(i) << " " << fit_y << endl;
    }
 }

@@ -6,22 +6,43 @@
 /// 'LICENSE', along with the software.
 ///
 /// \file  basis.hpp
-/// \brief Definition of class linreg::basis.
+///
+/// \brief Definition of linreg::basis; declaration of
+///        linreg::polynomial_basis, linreg::fourier_basis.
 
 #ifndef LINREG_BASIS_HPP
 #define LINREG_BASIS_HPP
 
-#include <deque> // for deque<>
-
+#include <deque>      // for deque<>
 #include <Eigen/Core> // for VectorXd
 
 namespace linreg
 {
-   /// Collection of basis functions for a linear regression.
+   template <typename PF>
+   class basis;
+
+   template <typename PF>
+   basis<PF> make_basis(PF p);
+
+   template <typename PF, typename... Targs>
+   basis<PF> make_basis(PF p, Targs... Fargs);
+
+   /// Abstract base class for every type of basis.
    ///
-   /// A deque is used instead of a vector for the base class because the
-   /// make_basis() function, which calls itself recursively, needs to be able
-   /// to push onto the front.
+   /// Each basis type must provide an operator() that takes a double x and
+   /// returns a vector of values, each corresponding to a different basis
+   /// function evaluated at the same x.
+   ///
+   /// Also, each basis type must report the size of the vector that will be
+   /// returned by operator().
+   struct abstract_basis {
+      /// \return Value of each basis function at given value of its argument.
+      virtual Eigen::VectorXd operator()(double const x) const = 0;
+
+      virtual unsigned size() const = 0;
+   };
+
+   /// Collection of basis functions for a linear regression.
    ///
    /// \tparam PF  Type of pointer to function. Typically, an instance of PF
    ///             should be either a regular C-style pointer to a global
@@ -31,11 +52,27 @@ namespace linreg
    ///             In any event, an instance pf of PF should return a double
    ///             when called as (*pf)(2.0).
    template <typename PF>
-   struct basis : public std::deque<PF> {
-      using std::deque<PF>::deque; ///< Inherit constructors.
+   class basis : public abstract_basis
+   {
+      /// A deque is used instead of a vector for storage because make_basis()
+      /// function, which calls itself recursively, needs to be able to push
+      /// onto the front.
+      std::deque<PF> d_;
 
+   public:
       /// \return Value of each basis function at given value of its argument.
-      Eigen::VectorXd operator()(double const x) const;
+      Eigen::VectorXd operator()(double const x) const override;
+
+      friend basis make_basis<PF>(PF p);
+
+      template <typename TPF, typename... Targs>
+      friend basis<TPF> make_basis(TPF p, Targs... Fargs);
+
+      /// \return Number of elements in vector returned by operator().
+      unsigned size() const override
+      {
+         return d_.size();
+      }
    };
 
    template <typename PF>
@@ -44,8 +81,7 @@ namespace linreg
       unsigned const sz = this->size();
       Eigen::VectorXd result(sz);
       for (unsigned i = 0; i < sz; ++i) {
-         PF const &pf = (*this)[i];
-         result(i) = (*pf)(x);
+         result(i) = (*d_[i])(x);
       }
       return result;
    }
@@ -64,7 +100,7 @@ namespace linreg
    basis<PF> make_basis(PF p)
    {
       basis<PF> r;
-      r.push_front(p);
+      r.d_.push_front(p);
       return r;
    }
 
@@ -84,16 +120,72 @@ namespace linreg
    basis<PF> make_basis(PF p, Targs... Fargs)
    {
       basis<PF> r = make_basis(Fargs...); // Recursive call.
-      r.push_front(p);
+      r.d_.push_front(p);
       return r;
    }
 
-   /// Copy function pointers into new basis.
-   template <template <class> class C, typename PF>
-   basis<PF> make_basis(C<PF> c)
+   /// Type of any simple, global basis function.
+   typedef double (*gfunc)(double);
+
+   /// Base class for standard bases, such as polynomial_basis and
+   /// fourier_basis.
+   class standard_basis : public abstract_basis
    {
-      return c;
-   }
+   protected:
+      unsigned degree_;
+
+      standard_basis(unsigned const d) : degree_(d)
+      {
+      }
+   };
+
+   /// Polynomial basis of finite degree.
+   struct polynomial_basis : public standard_basis {
+      /// Construct from specified degree of polynomial. The number of basis
+      /// functions in the basis will be equal to one more than the degree.
+      polynomial_basis(unsigned const d) : standard_basis(d)
+      {
+      }
+
+      /// \return Value of each basis function at given value of its argument.
+      ///         - Element 0 corresponds to the constant function f(x) = 1;
+      ///         - Element 1 corresponds to f(x) = x;
+      ///         - Element 2 corresponds to f(x) = x*x;
+      ///         - etc.
+      Eigen::VectorXd operator()(double const x) const override;
+
+      /// \return Degree of polynomial. This is the same as the number of
+      ///         elements in the vector returned by operator().
+      unsigned size() const override
+      {
+         return degree_ + 1;
+      }
+   };
+
+   struct fourier_basis : public standard_basis {
+      /// Construct from specified degree of fourier basis. The number of basis
+      /// functions in the basis will be equal to one more than twice the
+      /// degree.
+      fourier_basis(unsigned const d) : standard_basis(d)
+      {
+      }
+
+      /// \return Value of each basis function at given value of its argument.
+      ///         - Element 0 corresponds to the constant function f(x) = 1;
+      ///         - Element 1 corresponds to f(x) = cos(x);
+      ///         - Element 2 corresponds to f(x) = sin(x);
+      ///         - Element 3 corresponds to f(x) = cos(2*x);
+      ///         - Element 4 corresponds to f(x) = sin(2*x);
+      ///         - etc.
+      Eigen::VectorXd operator()(double const x) const override;
+
+      /// \return Number (2*degree + 1) of elements in the vector returned by
+      ///         operator().
+      unsigned size() const override
+      {
+         return 2 * degree_ + 1;
+      }
+   };
 }
 
 #endif // ndef LINREG_BASIS_HPP
