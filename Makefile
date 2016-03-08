@@ -54,7 +54,7 @@ $(PDFNAME) : $(TEXNAME) logo.pdf fdl-1.3.tex $(PROGRAMS) $(PROG_PDF)
 	pdflatex $(TEXNAME)
 	pdflatex $(TEXNAME)
 
-sinusoid : sinusoid.o basis.o
+sinusoid : sinusoid.o basis.o fit.o
 	$(CXX) -o $@ $^ $(LDLIBS)
 
 clean :

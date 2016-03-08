@@ -6,7 +6,7 @@
 /// 'LICENSE', along with the software.
 ///
 /// \file  fit.hpp
-/// \brief Definition of class linreg::fit.
+/// \brief Declaration of linreg::fit.
 
 #ifndef LINREG_FIT_HPP
 #define LINREG_FIT_HPP
@@ -17,10 +17,7 @@
 
 namespace linreg
 {
-   enum fit_solution {
-      FIT_SIMPLE,
-      FIT_SVD
-   };
+   enum fit_solution { FIT_SIMPLE, FIT_SVD };
 
    class fit
    {
@@ -31,20 +28,21 @@ namespace linreg
       Eigen::VectorXd coefs_;
 
    public:
-      fit(basis_ptr b, data_ptr d, fit_solution s = FIT_SVD)
-         : basis_(b), data_(d)
+      fit(basis_ptr b, data_ptr d, fit_solution s = FIT_SVD);
+
+      basis_ptr basis() const
       {
-         using namespace Eigen;
-         if (s == FIT_SVD) {
-            unsigned const M = d->rows();
-            MatrixXd B(M, b->size());
-            for (unsigned i = 0; i < M; ++i) {
-               B.row(i) = (*b)((*d)(i, 0));
-            }
-            coefs_ = B.jacobiSvd(ComputeThinU | ComputeThinV).solve(d->col(1));
-         } else {
-            throw "simple solution not yet implemented";
-         }
+         return basis_;
+      }
+
+      data_ptr data() const
+      {
+         return data_;
+      }
+
+      Eigen::VectorXd const &coefs() const
+      {
+         return coefs_;
       }
    };
 }

@@ -7,8 +7,8 @@
 ///
 /// \file  basis.hpp
 ///
-/// \brief Definition of linreg::basis; declaration of
-///        linreg::polynomial_basis, linreg::fourier_basis.
+/// \brief Definition of linreg::basis; declaration of linreg::polynom_basis,
+///        linreg::fourier_basis.
 
 #ifndef LINREG_BASIS_HPP
 #define LINREG_BASIS_HPP
@@ -49,8 +49,7 @@ namespace linreg
    /// General, custom collection of basis functions for a linear regression.
    /// An instance of basis can be used when a user-defined collection of basis
    /// functions is needed. For a standard basis, such as the polynomial basis
-   /// or the Fourier basis, use polynomial_basis or fourier_basis,
-   /// respectively.
+   /// or the Fourier basis, use polynom_basis or fourier_basis, respectively.
    ///
    /// \tparam PF  Type of pointer to function. Typically, an instance of PF
    ///             should be either a regular C-style pointer to a global
@@ -135,8 +134,7 @@ namespace linreg
       return r;
    }
 
-   /// Base class for standard bases, such as polynomial_basis and
-   /// fourier_basis.
+   /// Base class for standard bases, such as polynom_basis and fourier_basis.
    struct standard_basis : public abstract_basis {
       /// Make sure that descendant's destructor is called.
       virtual ~standard_basis() = default;
@@ -154,15 +152,15 @@ namespace linreg
    };
 
    /// Polynomial basis of finite degree.
-   struct polynomial_basis : public standard_basis {
+   struct polynom_basis : public standard_basis {
       /// Construct from specified degree of polynomial. The number of basis
       /// functions in the basis will be equal to one more than the degree.
-      polynomial_basis(unsigned const d) : standard_basis(d)
+      polynom_basis(unsigned const d) : standard_basis(d)
       {
       }
 
       /// Make sure that descendant's destructor is called.
-      virtual ~polynomial_basis() = default;
+      virtual ~polynom_basis() = default;
 
       /// \return Value of each basis function at given value of its argument.
       ///         - Element 0 corresponds to the constant function f(x) = 1;

@@ -14,7 +14,7 @@
 using namespace Eigen;
 using namespace linreg;
 
-VectorXd polynomial_basis::operator()(double const x) const
+VectorXd polynom_basis::operator()(double const x) const
 {
    unsigned const sz = size();
    VectorXd result(sz);
