@@ -178,11 +178,16 @@ namespace linreg
    };
 
    /// Fourier basis of finite degree.
-   struct fourier_basis : public standard_basis {
-      /// Construct from specified degree of fourier basis. The number of basis
-      /// functions in the basis will be equal to one more than twice the
-      /// degree.
-      fourier_basis(unsigned const d) : standard_basis(d)
+   class fourier_basis : public standard_basis
+   {
+      double angfreq_; ///< Angular frequency corresponding to fundamental period.
+
+   public:
+      /// Construct from specified degree and fundamental period of fourier
+      /// basis. The number of basis functions in the basis will be equal to
+      /// one more than twice the degree.
+      fourier_basis(unsigned const deg, double fper)
+         : standard_basis(deg), angfreq_(8.0 * atan(1.0) / fper)
       {
       }
 

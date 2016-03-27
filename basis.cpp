@@ -32,8 +32,9 @@ VectorXd fourier_basis::operator()(double const x) const
    result(0) = 1.0;
    for (unsigned i = 1; i < sz; i += 2) {
       unsigned const j = (i + 1) / 2;
-      result(i + 0) = cos(j * x);
-      result(i + 1) = sin(j * x);
+      double const k = j * angfreq_;
+      result(i + 0) = cos(k * x);
+      result(i + 1) = sin(k * x);
    }
    return result;
 }

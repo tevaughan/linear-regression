@@ -33,11 +33,11 @@ $(DEPDIR)/%.d: ;
 PROGRAMS = sinusoid
 PROG_PDF = $(PROGRAMS:=.pdf)
 
-%.pdf : %.gpi %.dat
+%.pdf : %.gpi
 	gnuplot $<
 
-%.dat : %
-	./$< > $@
+%.gpi : %
+	./$<
 
 %.pdf : %.fig
 	fig2dev -L pdf $< > $@
@@ -50,16 +50,18 @@ PDFNAME = $(DOCNAME).pdf
 
 all : $(PDFNAME)
 
-$(PDFNAME) : $(TEXNAME) logo.pdf fdl-1.3.tex $(PROGRAMS) $(PROG_PDF)
+$(PDFNAME) : $(TEXNAME) logo.pdf fdl-1.3.tex $(PROG_PDF)
 	pdflatex $(TEXNAME)
 	pdflatex $(TEXNAME)
 
-sinusoid : sinusoid.o basis.o fit.o
+sinusoid : sinusoid.o basis.o fit.o gplot.o
 	$(CXX) -o $@ $^ $(LDLIBS)
 
 clean :
 	@rm -frv .d
 	@rm -fv *.aux
+	@rm -fv *.dat
+	@rm -fv *.gpi
 	@rm -fv *.log
 	@rm -fv logo.pdf
 	@rm -fv *.o

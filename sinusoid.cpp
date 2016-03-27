@@ -8,67 +8,49 @@
 /// \file  sinusoid.cpp
 /// \brief Generator for data in sinusoidal example.
 
-#include <cmath>    // for sin(), cos()
 #include <iostream> // for cout, endl
 #include <memory>   // for make_shared<>()
-#include <random>   // for default_random_engine, normal_distribution<>
 
-#include <Eigen/SVD> // for VectorXd, MatrixXd, MatrixXd::jacobiSvd()
+#include "fake_data.hpp" // for fake_data
+#include "fit.hpp"   // for abstract_basis, fourier_basis, polynom_basis, fit
+#include "gplot.hpp" // for gplot
+#include "sinusoid_func.hpp" // for sinusoid
 
-#include "fit.hpp" // for abstract_basis, fourier_basis, polynom_basis, fit
-
-using namespace Eigen;
 using namespace linreg;
 using namespace std;
 
-shared_ptr<MatrixX2d> generate_data(unsigned const M,
-                                    shared_ptr<abstract_basis> b)
-{
-   unsigned const N = b->size();
-   auto data = make_shared<MatrixX2d>(M, 2);
-   VectorXd c(N);
-   for (unsigned i = 0; i < N; ++i) {
-      c[i] = i + 1.0;
-   }
-   default_random_engine generator;
-   normal_distribution<double> distribution;
-   double constexpr X_LO = 0.0;
-   double constexpr X_HI = 2.0 * M_PI;
-   double const DX = (X_HI - X_LO) / (M - 1);
-   for (unsigned i = 0; i < M; ++i) {
-      double &x = (*data)(i, 0);
-      double &y = (*data)(i, 1);
-      x = X_LO + i * DX;
-      y = distribution(generator) + c.dot((*b)(x));
-   }
-   return data;
-}
+double constexpr AMP = 1.3;                // Amplitude of sinusoidal model.
+double constexpr PER = 1.0;                // Period of sinusoidal model.
+double constexpr PHS = 3.1415926536 / 4.0; // Phase of sinusoidal model.
 
-int main(int, char **argv)
+unsigned constexpr M = 100;      // Number of fake measurements.
+double constexpr X1 = 0.1 * PER; // Lower-bound x of measurements
+double constexpr X2 = 0.9 * PER; // Upper-bound x of measurements.
+double constexpr SIG = 0.1;      // Std dev on y of measurements.
+
+int main()
 {
-   auto fb = make_shared<fourier_basis>(1);
+   sinusoid const s(AMP, PER, PHS);      // Model underlying fake measurements.
+   fake_data const d(M, X1, X2, SIG, s); // Fake measurements.
+   auto fb = make_shared<fourier_basis>(1, PER);
    auto pb = make_shared<polynom_basis>(3);
-   unsigned const fN = fb->size(); // Number of coefficients for fourier.
-   unsigned const pN = pb->size(); // Number of coefficients for polynom.
-   unsigned constexpr M = 100;     // Number of measurements.
-   auto data = generate_data(M, fb);
-   fit const fourier_fit(fb, data);
-   fit const polynom_fit(pb, data);
-   cerr << argv[0] << ": fourier coefs:";
+   unsigned const fN = fb->size(); // Number of coefficients for fourier basis.
+   unsigned const pN = pb->size(); // Number of coefficients for polynom basis.
+   fit const fourier_fit(fb, d);
+   fit const polynom_fit(pb, d);
+   gplot gp("sinusoid");
+   ostringstream ossf, ossp;
+   ossf << "fourier coefs:";
+   ossp << "polynom coefs:";
    for (unsigned j = 0; j < fN; ++j) {
-      cerr << " " << fourier_fit.coefs()[j];
+      ossf << " " << fourier_fit.coefs()[j];
    }
-   cerr << argv[0] << "  polynomial coefs:";
    for (unsigned j = 0; j < pN; ++j) {
-      cerr << " " << polynom_fit.coefs()[j];
+      ossp << " " << polynom_fit.coefs()[j];
    }
-   cerr << endl;
-   for (unsigned i = 0; i < M; ++i) {
-      double &x = (*data)(i, 0);
-      double const &y = (*data)(i, 1);
-      double const ffit_y = fourier_fit.coefs().dot((*fb)(x));
-      double const pfit_y = polynom_fit.coefs().dot((*pb)(x));
-      cout << x << " " << y << " " << ffit_y << " " << pfit_y << endl;
-   }
+   gp.add_func_plot(0.0, PER, 100, fourier_fit, "lines", ossf.str());
+   gp.add_func_plot(0.0, PER, 100, polynom_fit, "lines", ossp.str());
+   gp.add_data_plot(d.matrix());
+   gp.write_gpi();
 }
 

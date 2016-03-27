@@ -10,15 +10,15 @@
 
 #include "fit.hpp"
 
+using namespace Eigen;
 using namespace linreg;
 
-fit::fit(basis_ptr b, data_ptr d, fit_solution s) : basis_(b), data_(d)
+fit::fit(basis_ptr b, Eigen::MatrixX2d const& d, fit_solution s) : basis_(b)
 {
-   using namespace Eigen;
-   unsigned const M = d->rows();
+   unsigned const M = d.rows();
    unsigned const N = b->size();
-   MatrixXd const x = d->col(0);
-   MatrixXd const y = d->col(1);
+   MatrixXd const x = d.col(0);
+   MatrixXd const y = d.col(1);
    if (s == FIT_SVD) {
       MatrixXd B(M, N);
       for (unsigned i = 0; i < M; ++i) {
