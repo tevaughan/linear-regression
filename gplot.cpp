@@ -125,8 +125,8 @@ void gplot::write_gpi() const
       ofs << "set " << p.first << " " << p.second << "\n";
    }
    ofs << "\nplot";
+   bool first = true;
    for (auto &p : plots_) {
-      static bool first = true;
       if (first) {
          // On first pass, we terminate line containing only plot keyword, and
          // so no comma is required to separate one plot element from the next.

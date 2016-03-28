@@ -98,11 +98,16 @@
    \begin{center}
       \includegraphics[width=0.95\columnwidth]{sinusoid}
       \caption{%
-         Linear regression that finds for a sinusoidal model the best fit to a
-         set of 100 constraining points.  Note that only the amplitude, phase,
-         and (vertical) offset of a sinusoidal model can be found by linear
-         regression. The wavelength must be known ahead of time. Here, the
-         wavelength is 360$^\circ$.%
+         Different linear regressions (red and green curves) fitting the same
+         simulated data (blue symbols).  The red curve represents a linear
+         regression on the first three functions ($1$, $\cos(2\pi x)$, and
+         $\sin(2\pi x)$) of the Fourier basis, and the green curve represents a
+         linear regression on the first four functions ($1$, $x$, $x^2$, and
+         $x^3$) of the polynomial basis.  The 100 data points are spaced evenly
+         over one period of a model in which Gaussian noise has been added to
+         the output of $\sin(2\pi x)$.  The standard deviation of the model's
+         Gaussian noise is $0.3$.  The best-fit coeffients are displayed in the
+         legend of the graph.%
       }
       \label{fig:sinusoid}
    \end{center}
