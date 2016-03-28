@@ -130,33 +130,73 @@ then one can find the best-fit curve by way of linear regression.
 For example, in the $x$-$y$ plane, a curve $y = f(x)$ might correspond to a
 function whose expression is
 \begin{equation}
-   f(x) = c_1 \cos\tfrac{2\pi x}{\lambda} + c_2 \sin\tfrac{2\pi x}{\lambda}.
+   f(x) = c_1 b_1(x) + c_2 b_2(x).
 \end{equation}
 In this case, one calls $x$ the \emph{independent variable} and $y$ the
-\emph{dependent variable}.  The wavelenth of the sinusoidal model is $\lambda$.
-The expression for $f(x)$ is the linear combination of two functions of $x$.
-The coefficients of the linear combination are $c_1$ and $c_2$.  The functions
-that are linearly combined are called \emph{basis functions}.  For linear
-regression with the model in the present example, there must be at least three
-constraining points---in general, at least one point more than the number of
-coefficients to be solved for---at least three points that constrain the
-trajectory of the curve.  Suppose that one has a set $\{(x_1, y_1),$ $(x_2,
-y_2),$ $(x_3, y_3)\}$ of exactly three measurements, each of which corresponds
-to a point in the $x$-$y$ plane.  The linear regression determines $c_1$ and
-$c_2$ so that the sum of squared deviations between the points and the curve is
-minimized.  That is, the regression finds $c_1$ and $c_2$ such that the sum
+\emph{dependent variable}.  The expression for $f(x)$ is the linear combination
+of two expressions, $b_1(x)$ and $b_2(x)$.  The coefficients of the linear
+combination are $c_1$ and $c_2$.  Each expression that is linearly combined
+corresponds to a function---in this case, to $b_1$ or $b_2$---that is called
+called a \emph{basis function}.  For linear regression with the model in the
+present example, there must be at least three constraining points---in general,
+at least one point more than the number of coefficients to be solved for---at
+least three points that constrain the trajectory of the curve.  Suppose that
+one has a set $\{(x_1, y_1),$ $(x_2, y_2),$ $(x_3, y_3)\}$ of exactly three
+measurements, each of which corresponds to a point in the $x$-$y$ plane.  The
+linear regression determines $c_1$ and $c_2$ so that the sum of squared
+deviations between the points and the curve is minimized.  That is, the
+regression finds $c_1$ and $c_2$ such that the sum
 \begin{equation}
    \left[y_1 - f(x_1)\right]^2 + \left[y_2 - f(x_2)\right]^2 + \left[y_3 -
    f(x_3)\right]^2
 \end{equation}
 is minimized.
 
-Figure~\ref{fig:sinusoid} shows a sinusoidal linear regression for a set of 100
-measured points. A sinusoidal model can be used to find by linear regression
-not only the amplitude of each basis function (or, equivalently, the overall
-amplitude and the phase) but also the vertical offset of the oscillation.
-However, the example in the figure is like the example here in the text, where
-the vertical-offset term is not considered.
+The red curve in Figure~\ref{fig:sinusoid} shows a linear regression for a set
+of 100 simulated measurements. The first three functions of the Fourier basis
+are used to estimate from the measurements the underlying oscillation's
+vertical offset $B$, amplitude $A$, and phase $\phi$. This choice of basis
+amounts to the hypothesis that in the data the variation underlying the noise
+is a sinusoidal oscillation with unknown amplitude, offset, and phase but with
+known period or wavelength.  For the case of unit wavelength, the desired form
+of the oscillation is expressed as
+\begin{equation}
+   f(x) = B + A \sin(2\pi x + \phi).
+\end{equation}
+Expanding this according to the appropriate trigonometric identity, one finds
+\begin{equation}
+   f(x) = B + A \sin(\phi) \cos(2\pi x) + A \cos(\phi) \sin(2\pi x).
+\end{equation}
+Using the first three terms of the Fourier basis, however, one constructs
+$f(x)$ to find $c_1$, $c_2$, and $c_3$ such that
+\begin{equation}
+   f(x) = c_1 + c_2 \cos(2\pi x) + c_3 \sin(2\pi x);
+\end{equation}
+so we have
+\begin{eqnarray}
+   B &=& c_1\\
+   A \sin(\phi) &=& c_2\\
+   A \cos(\phi) &=& c_3,
+\end{eqnarray}
+and therefore
+\begin{eqnarray}
+   A    &=& \sqrt{c_2^2 + c_3^2}\\
+   \phi &=& \arctan\left(\frac{c_2}{c_3}\right)
+\end{eqnarray}
+In the example of Figure~\ref{fig:sinusoid}, the data derive from $\sin(2\pi
+x)$ plus Gaussian noise. The best fit on the Fourier basis might ideally (with
+no noise) find $B = 0$, $A = 1$, and $\phi = 0$. With 100~simulated points and
+a standard deviation of 0.3~in the noise, the example shows a best-fit $B =
+0.00182$, $A = \sqrt{0.0217^2 + 0.975^2} = 0.975$, and $\phi =
+\arctan(\tfrac{0.0217}{0.975}) = 1.27^\circ$.
+
+The green curve in Figure~\ref{fig:sinusoid} also shows a linear regression for
+the same set of points. The first four functions of the polynomial basis are
+used to estimate the first four polynomial coefficients. This choice of basis
+amounts to the hypothesis that in the data the variation underlying the noise
+is a polynomial function of at most third degree. One sees, from the goodness
+of the fit, that a third-degree polynomial fit is a reasonable approximation of
+sinusoidal variation over a single wavelength.
 
 The main benefits of linear regression include determinism in the time required
 to compute the fit and certainty that the solution is in fact the best
