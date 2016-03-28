@@ -2,7 +2,7 @@
 # Copyright 2016  Thomas E. Vaughan
 #
 # The present software is redistributable under the terms of the GNU LESSER
-# GENERAL PUBLIC LICENSE, which is must be distributed in the file, 'LICENSE',
+# GENERAL PUBLIC LICENSE, which must be distributed in the file, 'LICENSE',
 # along with the software.
 
 CXXFLAGS = -g -O0 -std=c++11 -Wall

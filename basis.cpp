@@ -2,8 +2,8 @@
 /// Copyright 2016  Thomas E. Vaughan
 ///
 /// The present software is redistributable under the terms of the GNU LESSER
-/// GENERAL PUBLIC LICENSE, which is must be distributed in the file,
-/// 'LICENSE', along with the software.
+/// GENERAL PUBLIC LICENSE, which must be distributed in the file, 'LICENSE',
+/// along with the software.
 ///
 /// \file  basis.cpp
 /// \brief Definition of linreg::polynomial_basis, linreg::fourier_basis.

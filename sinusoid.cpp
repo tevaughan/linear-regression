@@ -2,8 +2,8 @@
 /// Copyright 2016  Thomas E. Vaughan
 ///
 /// The present software is redistributable under the terms of the GNU LESSER
-/// GENERAL PUBLIC LICENSE, which is must be distributed in the file,
-/// 'LICENSE', along with the software.
+/// GENERAL PUBLIC LICENSE, which must be distributed in the file, 'LICENSE',
+/// along with the software.
 ///
 /// \file  sinusoid.cpp
 /// \brief Generator for data in sinusoidal example.
@@ -13,9 +13,9 @@
 #include <memory>   // for make_shared<>()
 #include <sstream>  // for ostringstream
 
-#include "fake_data.hpp" // for fake_data
-#include "fit.hpp"   // for fourier_basis, polynom_basis, fit, Eigen::VectorXd
-#include "gplot.hpp" // for gplot
+#include "fake_data.hpp"     // for fake_data
+#include "fit.hpp"           // for fourier_basis, polynom_basis, fit, VectorXd
+#include "gplot.hpp"         // for gplot
 #include "sinusoid_func.hpp" // for sinusoid
 
 using namespace Eigen;
